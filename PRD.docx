@@ -1,0 +1,168 @@
+**"Career Co-Pilot,"** a sophisticated, AI-powered web application.
+
+---
+
+## **Product Requirements Document: Career Co-Pilot**
+
+*   **Version:** 1.0
+*   **Date:** September 25, 2025
+*   **Author:** [Your Name]
+*   **Status:** Final
+
+### **1. Vision & Introduction**
+
+**Vision:** To fundamentally change how professionals manage their career narrative. Career Co-Pilot will be an intelligent, persistent platform that transforms a user's entire history of experiences, skills, and projects into a dynamic "talent pool." This pool will be used to generate perfectly tailored, on-demand resume content for any job application, eliminating the manual, repetitive, and error-prone work of resume customization.
+
+**Introduction:** Career Co-Pilot is a full-stack web application that moves beyond simple resume *analysis* to offer dynamic resume *generation*. Users create a secure profile, build a structured database of their career accomplishments (the "Career Pool"), and leverage a powerful AI engine to generate optimized resume sections specifically tailored to a target job description. It is a user's personal career assistant.
+
+### **2. Core Product Goals**
+
+*   **User Goal:** To create a highly tailored, professional resume for any job application in minutes, not hours, with confidence that it is optimized for both ATS and human recruiters.
+*   **Product Goal:** To become an indispensable career management tool where users can centrally store, manage, and deploy their professional experience, leading to high user retention.
+*   **Portfolio Goal:** To build and deploy a complex, stateful, full-stack application demonstrating mastery of user authentication, database management, multi-stage AI prompt engineering, and end-to-end product development.
+
+### **3. Target Audience**
+
+The target audience remains the same (Active Job Seekers, Career Changers, Recent Graduates), but the value proposition for them is now significantly stronger:
+
+*   **For the Active Job Seeker:** "Stop rewriting your resume for every application. Let your Career Co-Pilot do it for you by intelligently selecting and rephrasing your best accomplishments for each role."
+*   **For the Career Changer:** "Translate your past experience effectively. The AI will help you highlight the transferable skills and projects that matter most for your new career path."
+*   **For the Recent Graduate:** "Build a powerful master profile of all your projects, internships, and skills. The app will help you assemble the strongest possible resume for every entry-level application."
+
+### **4. Functional Requirements & User Stories**
+
+#### **Feature 1: User Authentication & Onboarding (REQ-U)**
+
+*   **REQ-U1: Account Creation:** As a new user, I must be able to sign up securely using an email and password. Passwords must be hashed.
+*   **REQ-U2: Login/Logout:** As a registered user, I must be able to log in to access my profile and log out to end my session securely.
+*   **REQ-U3: Guided Onboarding:** As a first-time user after signup, I want to be guided through a setup process that asks for my total years of experience and prompts me to build my initial Career Pool.
+
+#### **Feature 2: The Career Pool (Data Ingestion & Management) (REQ-P)**
+
+*   **REQ-P1: Dual Input Method:** As a user during onboarding or from my dashboard, I want the choice to either **upload a resume file (PDF/DOCX)** for automatic parsing or **enter my details manually** into a form.
+*   **REQ-P2: AI-Powered Resume Parsing:** As a user who uploads a resume, I expect the system to use AI to automatically extract and categorize my information into: Education, Work Experience, Technical Skills, Projects, and Certifications.
+*   **REQ-P3: Structured Data Storage:** All extracted or manually entered data must be saved in a structured format (e.g., JSON) in a database, linked to my user ID.
+*   **REQ-P4: Career Dashboard:** As a logged-in user, I need a central dashboard that displays all the contents of my Career Pool in distinct, easy-to-read sections.
+*   **REQ-P5: Full CRUD Control:** As a user on my dashboard, I must have full control over my data. I need to be able to **Create** new entries (e.g., add a new project), **Read** all my entries, **Update** any existing entry (e.g., edit a bullet point), and **Delete** any entry.
+
+#### **Feature 3: The AI Resume Generator (REQ-G)**
+
+*   **REQ-G1: Job Description Input:** As a user, I need a dedicated page or section where I can paste the full text of a job description I am targeting.
+*   **REQ-G2: AI Generation Trigger:** As a user, after pasting the job description, I will click a prominent "Generate Content" button to start the AI process.
+*   **REQ-G3: Context-Aware Generation:** The system must send both the target job description AND my *entire* stored Career Pool to the AI model for analysis.
+*   **REQ-G4: Structured, Generative Output:** The AI's output must not be a critique. It must be a set of generated, ready-to-use resume sections, including:
+    *   **Targeted Professional Summary:** A 2-3 sentence summary written specifically for the role.
+    *   **Optimized Experience Section:** The 2-3 most relevant work experiences/projects from my pool, with their bullet points rewritten to include keywords and metrics from the job description.
+    *   **Curated Skills List:** A selection of the most relevant technical and soft skills from my pool.
+    *   **"Why I'm a Fit" Section:** A brief explanation of why the AI selected certain experiences, giving me insight into the choices.
+*   **REQ-G5: Copy-Paste Functionality:** Each generated section should have an easy "Copy" button so I can transfer the content to my actual resume document.
+
+### **5. User Flow & Wireframe**
+
+**User Flow:**
+
+1.  **Landing Page:** New user clicks "Sign Up."
+2.  **Authentication:** User creates an account and logs in.
+3.  **Onboarding:** User is prompted to upload a resume or enter details manually.
+4.  **AI Parsing (if uploaded):** System processes the resume and populates the database.
+5.  **Career Pool Dashboard:** User is redirected to their main dashboard. They can now view, edit, add, or delete any piece of their career history.
+6.  **Navigation:** User clicks on "Generate Resume Content" in the navigation bar.
+7.  **Generator Page:** User pastes a job description and clicks "Generate."
+8.  **Results Display:** The page shows the newly generated, tailored content sections.
+
+**High-Level Wireframe:**
+
+*   **Screen 1: The Career Pool Dashboard**
+    *   `[Header: Welcome, [User Name]!]`
+    *   `[Section: Work Experience]`
+        *   `[Entry 1: Title, Company, Dates] [Edit] [Delete]`
+        *   `[Entry 2: Title, Company, Dates] [Edit] [Delete]`
+        *   `[Button: + Add Work Experience]`
+    *   `[Section: Projects]`
+        *   `[Entry 1: Title, Context] [Edit] [Delete]`
+        *   `[Button: + Add Project]`
+    *   *(Repeat for Education, Skills, Certifications)*
+
+*   **Screen 2: The Generator Page**
+    *   `[Header: Create Tailored Content]`
+    *   `[Column 1: Paste Job Description]`
+        *   `[Large Text Area for JD]`
+        *   `[Button: GENERATE CONTENT]`
+    *   `[Column 2: Your AI-Generated Resume]`
+        *   `[Spinner while loading...]`
+        *   `[H3: Suggested Professional Summary] [Copy]`
+        *   `[Generated Text...]`
+        *   `[H3: Suggested Work Experience] [Copy]`
+        *   `[Generated Text with rewritten bullets...]`
+
+### **6. Non-Functional Requirements**
+
+*   **NFR-01: Security:** User passwords must be hashed using a strong algorithm (e.g., bcrypt). All communication between the client and server must be over HTTPS. The app must be protected against common web vulnerabilities (XSS, CSRF).
+*   **NFR-02: Privacy:** A clear privacy policy must state that user data is stored securely for their use only and will **never** be used to train AI models or be shared with third parties.
+*   **NFR-03: Performance:** Database queries must be optimized. The AI generation process should not exceed 20 seconds.
+*   **NFR-04: Data Integrity:** The backend must validate the JSON structure returned by the AI before saving it to the database to prevent corruption.
+
+### **7. Technical Architecture & Stack**
+
+The application will be built using a **decoupled, service-oriented architecture**. The frontend (Next.js) will be a standalone Single-Page Application (SPA) that communicates with the backend (Python) via a RESTful API. This separation of concerns is a modern best practice that promotes scalability, maintainability, and a superior user experience.
+
+#### **7.1. Frontend**
+
+*   **Framework: Next.js (with React & TypeScript)**
+    *   **Why:** Chosen for its best-in-class developer experience, performance optimizations (like Server-Side Rendering and Static Site Generation), robust routing, and the vast React ecosystem. TypeScript will be used to ensure type safety and improve code quality and maintainability, which is critical for a project of this complexity.
+*   **Styling: Tailwind CSS**
+    *   **Why:** A utility-first CSS framework that allows for rapid development of modern, responsive, and custom user interfaces without leaving the HTML.
+*   **State Management: Zustand or React Context**
+    *   **Why:** For managing global application state, such as user authentication status, in a clean and efficient manner.
+*   **API Communication: Axios or Fetch API**
+    *   **Why:** To handle all HTTP requests to the Python backend API for data fetching, user authentication, and triggering AI jobs.
+
+#### **7.2. Backend**
+
+*   **Language & Framework: Python (with Flask or FastAPI)**
+    *   **Why:** Python is the ideal choice due to its powerful data processing libraries, mature AI/ML ecosystem (including the Google AI SDK), and rapid development speed. The backend will be built exclusively as a **RESTful API**.
+    *   **Flask** is excellent for its simplicity and flexibility.
+    *   **FastAPI** is a modern, high-performance alternative that includes automatic API documentation and data validation, making it a strong contender.
+*   **API Framework: Flask-RESTful / FastAPI's built-in features**
+    *   **Why:** To provide the tools necessary to build a clean, well-structured, and maintainable set of API endpoints.
+*   **Database ORM: SQLAlchemy**
+    *   **Why:** The de-facto standard Object-Relational Mapper for Python, providing a powerful and flexible way to interact with the PostgreSQL database without writing raw SQL.
+
+#### **7.3. Database**
+
+*   **System: PostgreSQL**
+    *   **Why:** A robust, open-source, and highly scalable relational database that is the industry standard for reliable and data-intensive applications.
+
+#### **7.4. Authentication**
+
+*   **Method: Token-Based Authentication (JWT - JSON Web Tokens)**
+    *   **Why:** JWT is the standard for securing communication in decoupled architectures. The Python backend will generate a secure token upon successful login. The Next.js frontend will store this token (e.g., in an HttpOnly cookie) and include it in the header of all subsequent authenticated API requests.
+
+#### **7.5. Core Libraries & Services**
+
+*   **AI Service:** Google Gemini Pro API via the `google-generativeai` SDK for Python.
+*   **Password Hashing:** `bcrypt` for securely hashing and verifying user passwords.
+*   **File Parsing:** `PyPDF2` (for PDF resumes), `python-docx` (for DOCX resumes).
+
+#### **7.6. Deployment**
+
+The decoupled nature of the application requires a two-part deployment strategy:
+
+*   **Frontend (Next.js):** Deployed to a platform optimized for modern JavaScript applications and CDNs, such as **Vercel** (highly recommended as it's made by the creators of Next.js) or **Netlify**.
+*   **Backend (Python API):** Deployed as a web service on a Platform-as-a-Service (PaaS) like **Heroku** or **DigitalOcean App Platform**. This keeps the API server separate and scalable.
+
+### **8. Roadmap (Post-V1.0)**
+
+*   **V1.1 (Quality of Life):**
+    *   **Export to PDF:** Allow users to download the generated content as a basic, formatted PDF resume.
+    *   **Version History:** Save generated resume versions against specific jobs so users can review them later.
+*   **V2.0 (Expansion):**
+    *   **Cover Letter Generation:** Add a new feature to generate a tailored cover letter using the Career Pool and JD.
+    *   **LinkedIn Profile Optimization:** Provide suggestions for a user's LinkedIn summary and experience sections.
+
+
+
+
+    Excellent. This is a crucial clarification and a very strong architectural choice. Using Python for the backend and Next.js for the frontend creates a modern, decoupled, and highly scalable application. This is the standard architecture for many professional web services.
+
+

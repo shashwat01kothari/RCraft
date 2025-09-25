@@ -1,0 +1,106 @@
+
+
+### **Project Plan: Career Co-Pilot V1.1**
+
+**1. Project Management & Philosophy**
+
+*   **Tooling:** We will use a Kanban-style project board to track progress. A free tool like **Trello**, **Notion**, or **Asana** is perfect for this. Create the following columns: `Backlog`, `To Do (This Sprint)`, `In Progress`, and `Done`.
+*   **Methodology:** We will follow a "sprint" model. Each phase from the Requirements Plan is a sprint. The goal is to move all tasks for a given sprint from the backlog into the `Done` column before starting the next.
+*   **Version Control:** Commit your code to Git *frequently*. Use clear, descriptive commit messages (e.g., `feat(api): create user registration endpoint`, `fix(ui): correct login form validation`).
+
+**2. Initial Setup: Your Project Board**
+
+Create "cards" or "tasks" on your project board for every checklist item listed in the sprints below. Start by putting them all in the `Backlog` column. As you begin a sprint, move its tasks into the `To Do` column.
+
+---
+
+### **Sprint 0: Foundation & Setup (1-2 Days)**
+
+**Goal:** Create a stable, dual-stack development environment.
+
+| Task ID | Task Description | Status |
+| :--- | :--- | :--- |
+| **S0-T1** | Initialize Git monorepo with `backend` and `frontend` directories. | ☐ |
+| **S0-T2** | **Backend:** Set up Python virtual environment and install Flask/FastAPI, SQLAlchemy, etc. | ☐ |
+| **S0-T3** | **Backend:** Configure local PostgreSQL connection and `.env` file for secrets. | ☐ |
+| **S0-T4** | **Backend:** Implement CORS to allow requests from `http://localhost:3000`. | ☐ |
+| **S0-T5** | **Backend:** Create a simple `GET /api/healthcheck` endpoint. | ☐ |
+| **S0-T6** | **Frontend:** Initialize Next.js (TypeScript) project. | ☐ |
+| **S0-T7** | **Frontend:** Install Tailwind CSS and Axios. | ☐ |
+| **S0-T8** | **Frontend:** Create an API utility function and a test page to call the backend healthcheck. | ☐ |
+| **S0-T9** | **CI/CD:** Confirm the frontend can successfully receive data from the local backend. | ☐ |
+
+---
+
+### **Sprint 1: The MVP - Users & Manual Data (3-4 Days)**
+
+**Goal:** A user can create an account, log in, and manually manage their career data via API calls.
+
+| Task ID | Task Description | Status |
+| :--- | :--- | :--- |
+| **S1-T1** | **Backend:** Define all SQLAlchemy database models (`User`, `WorkExperience`, etc.). | ☐ |
+| **S1-T2** | **Backend:** Create `POST /api/auth/register` endpoint with bcrypt password hashing. | ☐ |
+| **S1-T3** | **Backend:** Create `POST /api/auth/login` endpoint that returns a JWT. | ☐ |
+| **S1-T4** | **Backend:** Create a protected `GET /api/users/me` endpoint to test authentication. | ☐ |
+| **S1-T5** | **Backend:** Implement the full suite of protected CRUD API endpoints for `WorkExperience`. | ☐ |
+| **S1-T6** | **Backend:** Implement the full suite of protected CRUD API endpoints for `Projects`. | ☐ |
+| **S1-T7** | **Frontend:** Build the UI components for the Register and Login pages. | ☐ |
+| **S1-T8** | **Frontend:** Implement global state management (Context/Zustand) for authentication. | ☐ |
+| **S1-T9** | **Frontend:** Implement client-side logic to call register/login APIs and store the JWT securely. | ☐ |
+| **S1-T10**| **Frontend:** Create a protected routing system (redirects if not logged in). | ☐ |
+| **S1-T11**| **Frontend:** Build the Dashboard page to display `WorkExperience` and `Projects` from the API. | ☐ |
+| **S1-T12**| **Frontend:** Build the forms/modals and logic for adding, editing, and deleting data via the API. | ☐ |
+
+---
+
+### **Sprint 2: The First AI Magic - Resume Parsing (2 Days)**
+
+**Goal:** Integrate the AI resume parsing feature.
+
+| Task ID | Task Description | Status |
+| :--- | :--- | :--- |
+| **S2-T1** | **Backend:** Install `PyPDF2` and `python-docx`. | ☐ |
+| **S2-T2** | **Backend:** Engineer the detailed "Extraction Prompt" for the Gemini API. | ☐ |
+| **S2-T3** | **Backend:** Create the protected `POST /api/resume/parse` endpoint. | ☐ |
+| **S2-T4** | **Backend:** Inside the endpoint, implement file handling, text extraction, the call to the Gemini API, and logic to save the parsed JSON to the database. | ☐ |
+| **S2-T5** | **Frontend:** Build a reusable file upload UI component. | ☐ |
+| **S2-T6** | **Frontend:** Add the uploader to the Onboarding/Dashboard page. | ☐ |
+| **S2-T7** | **Frontend:** Implement the client-side logic to send the file to the parsing API. | ☐ |
+| **S2-T8** | **Frontend:** Add a loading state (e.g., spinner) while the backend is processing. | ☐ |
+| **S2-T9** | **Frontend:** On successful response, trigger a data refresh to update the dashboard display. | ☐ |
+
+---
+
+### **Sprint 3: The Payoff - The Generator Engine (2-3 Days)**
+
+**Goal:** Implement the core value proposition: the AI-powered resume content generator.
+
+| Task ID | Task Description | Status |
+| :--- | :--- | :--- |
+| **S3-T1** | **Backend:** Engineer the complex "Suggestion Prompt" for the Gemini API. | ☐ |
+| **S3-T2** | **Backend:** Create the protected `POST /api/generator` endpoint. | ☐ |
+| **S3-T3** | **Backend:** Inside the endpoint, implement logic to fetch the user's career pool, construct the prompt with the JD, call the Gemini API, and return the response. | ☐ |
+| **S3-T4** | **Frontend:** Build the UI for the Generator page (text area for JD, button, results area). | ☐ |
+| **S3-T5** | **Frontend:** Implement the logic to call the `/api/generator` endpoint. | ☐ |
+| **S3-T6** | **Frontend:** Build the UI components to render the structured response from the AI (e.g., cards for "Summary," "Experience," etc.). | ☐ |
+| **S3-T7** | **Frontend:** Add a "Copy to Clipboard" button for each generated section. | ☐ |
+| **S3-T8** | **Frontend:** Implement clear loading and error states for the generation process. | ☐ |
+
+---
+
+### **Sprint 4: Polish & Deployment (2 Days)**
+
+**Goal:** Prepare the application for a public launch and professional presentation.
+
+| Task ID | Task Description | Status |
+| :--- | :--- | :--- |
+| **S4-T1** | **Testing:** Manually test the entire user flow from registration to generation. Use Postman to double-check all API endpoint responses and error codes. | ☐ |
+| **S4-T2** | **UI/UX:** Perform a full responsive design check. Ensure the app is usable and looks good on a mobile browser. | ☐ |
+| **S4-T3** | **UI/UX:** Standardize all fonts, colors, and spacing for a professional look and feel. | ☐ |
+| **S4-T4** | **Content:** Add a simple landing page, a footer, and a clear privacy disclaimer. | ☐ |
+| **S4-T5** | **Docs:** Write a high-quality `README.md` file in the root of your monorepo. Explain the project, the tech stack, and how to run both services locally. | ☐ |
+| **S4-T6** | **Backend:** Prepare the Python app for deployment (e.g., `requirements.txt`, Gunicorn config). | ☐ |
+| **S4-T7** | **Backend:** Deploy the API to a service like Heroku or DigitalOcean App Platform. Set all production environment variables. | ☐ |
+| **S4-T8** | **Frontend:** Prepare the Next.js app for deployment. | ☐ |
+| **S4-T9** | **Frontend:** Deploy the frontend to Vercel or Netlify. Set the production API URL environment variable to point to your live backend. | ☐ |
+| **S4-T10**| **CI/CD:** Perform a final end-to-end test on the live, deployed application. | ☐ |

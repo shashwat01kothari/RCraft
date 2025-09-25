@@ -1,0 +1,132 @@
+**"Career Co-Pilot,"** a sophisticated, AI-powered web application.
+
+---
+
+### **Requirements Plan: Career Co-Pilot V1.1 (Decoupled Architecture)**
+
+**1. Introduction & Development Philosophy**
+
+This plan outlines the development strategy for Career Co-pilot, a full-stack application featuring a **Python REST API backend** and a **Next.js frontend**. The core philosophy is to build and test the backend API endpoints first for each feature, followed by the development of the frontend components that consume them. This API-first approach ensures a stable and well-defined contract between the two services.
+
+The project will be developed in iterative phases, starting with a foundational MVP and progressively adding AI-powered features. This will be managed within a monorepo structure (a single Git repository containing both `frontend` and `backend` directories) for simplicity.
+
+**2. Overall Project Timeline (High-Level Estimate)**
+
+The decoupled architecture adds complexity, particularly in setup, authentication, and deployment. The timeline reflects this.
+
+*   **Phase 0: Dual-Stack Scaffolding & Setup:** (1 - 2 Days)
+*   **Phase 1: The MVP - API-Driven User & Data Service:** (3 - 4 Days)
+*   **Phase 2: The First "Magic" - AI Parsing Service & Integration:** (2 Days)
+*   **Phase 3: The Payoff - The AI Generator Service & Integration:** (2 - 3 Days)
+*   **Phase 4: Polishing, Testing & Dual Deployment:** (2 Days)
+
+**Total Estimated Effort:** Approximately **10-13 Days** of focused work.
+
+---
+
+### **3. Phased Development Plan**
+
+#### **Phase 0: Dual-Stack Scaffolding & Setup**
+
+*   **Goal:** To establish a working development environment where the Next.js frontend can successfully communicate with the Python backend API.
+*   **PRD Requirements Covered:** Foundational for all future work.
+*   **Key Tasks:**
+    1.  **Repository Setup:**
+        *   Initialize a Git repository.
+        *   Create two subdirectories: `backend` and `frontend`.
+    2.  **Backend Setup (`backend` directory):**
+        *   Initialize a Python virtual environment.
+        *   Install Flask/FastAPI, SQLAlchemy, and other dependencies.
+        *   Establish a connection to a local PostgreSQL database.
+        *   Implement **CORS (Cross-Origin Resource Sharing)** to allow requests from the frontend's development server (`http://localhost:3000`). This is critical.
+        *   Create a simple `/api/healthcheck` endpoint that returns a JSON success message.
+    3.  **Frontend Setup (`frontend` directory):**
+        *   Initialize a new Next.js project using `npx create-next-app` (with TypeScript).
+        *   Install Tailwind CSS for styling and Axios for API calls.
+        *   Create a basic service or utility function to call the backend's `/api/healthcheck` endpoint.
+        *   Set up an environment variable (`NEXT_PUBLIC_API_BASE_URL`) to point to the backend server's address (`http://localhost:5000`).
+*   **Definition of Done:** You can run both the Python server and the Next.js development server simultaneously. A page on the Next.js app successfully fetches and displays the message from the backend's `/api/healthcheck` endpoint.
+
+---
+
+#### **Phase 1: The MVP - API-Driven User & Data Service**
+
+*   **Goal:** To implement the core user authentication and manual data management features, following an API-first pattern.
+*   **PRD Requirements Covered:** REQ-U1, REQ-U2, REQ-U3, REQ-P3, REQ-P4, REQ-P5.
+*   **Key Tasks (Backend First):**
+    1.  **Backend Models:** Define the SQLAlchemy database models for `User` and all `Career Pool` items, establishing their relationships.
+    2.  **Backend Auth API:**
+        *   Create the API endpoints: `POST /api/auth/register` and `POST /api/auth/login`.
+        *   Implement password hashing (bcrypt) and JWT (JSON Web Token) generation upon successful login.
+        *   Implement a protected `/api/users/me` endpoint that returns the current user's data, requiring a valid JWT for access.
+    3.  **Backend CRUD API:**
+        *   Create the full suite of protected RESTful API endpoints for each Career Pool item (e.g., `GET /api/projects`, `POST /api/projects`, `PUT /api/projects/:id`, `DELETE /api/projects/:id`).
+*   **Key Tasks (Frontend Next):**
+    1.  **Frontend Auth Flow:**
+        *   Build the Register and Login pages/components.
+        *   Implement the client-side logic to call the auth endpoints.
+        *   Upon successful login, securely store the received JWT (e.g., in an HttpOnly cookie) and manage the global authentication state (using React Context or Zustand).
+    2.  **Frontend Dashboard:**
+        *   Create the main dashboard page, making it a protected route that is only accessible to logged-in users.
+        *   On page load, call the backend's `GET` endpoints to fetch and display the user's Career Pool data.
+    3.  **Frontend CRUD UI:**
+        *   Build the forms and modals for adding and editing Career Pool items.
+        *   Implement the client-side logic to call the `POST`, `PUT`, and `DELETE` API endpoints and update the UI state upon a successful response.
+*   **Definition of Done:** A user can register, log in, be redirected to a dashboard, manually manage their career data (which is persisted in the database via API calls), and log out.
+
+---
+
+#### **Phase 2: The First "Magic" - AI Parsing Service & Integration**
+
+*   **Goal:** To create the backend service for AI-powered resume parsing and connect it to the frontend.
+*   **PRD Requirements Covered:** REQ-P1 (upload part), REQ-P2.
+*   **Key Tasks (Backend First):**
+    1.  **Backend File Upload API:**
+        *   Create a new protected endpoint: `POST /api/resume/parse`.
+        *   This endpoint will be configured to handle `multipart/form-data` file uploads.
+        *   It will contain the logic to extract text from the uploaded file, call the Gemini "Extraction" API, parse the resulting JSON, and save the data to the database for the authenticated user.
+*   **Key Tasks (Frontend Next):**
+    1.  **Frontend Upload Component:**
+        *   Build the file upload component on the onboarding page and/or dashboard.
+        *   Implement the logic to send the selected file to the `/api/resume/parse` endpoint using Axios.
+        *   Display a loading state while the backend processes the file.
+        *   On a successful response, trigger a refresh of the dashboard data to show the newly populated fields.
+*   **Definition of Done:** A logged-in user can upload a resume file. The file is processed by the backend, the data is saved, and the user's dashboard automatically updates to display the parsed information.
+
+---
+
+#### **Phase 3: The Payoff - The AI Generator Service & Integration**
+
+*   **Goal:** To build the core generative feature of the application.
+*   **PRD Requirements Covered:** REQ-G1, REQ-G2, REQ-G3, REQ-G4, REQ-G5.
+*   **Key Tasks (Backend First):**
+    1.  **Backend Generator API:**
+        *   Create a new protected endpoint: `POST /api/generator`.
+        *   This endpoint will accept a job description in the request body.
+        *   It will fetch the user's entire Career Pool from the database, construct the complex "Suggestion" prompt, call the Gemini API, and return the generated content as a JSON object.
+*   **Key Tasks (Frontend Next):**
+    1.  **Frontend Generator Page:**
+        *   Create the new page/component with the job description text area.
+        *   Implement the logic to call the `/api/generator` endpoint with the JD text.
+        *   Display a loading state while waiting for the AI's response.
+        *   On success, parse the JSON response from the backend and render the generated content in clean, formatted sections.
+        *   Implement the client-side "Copy to Clipboard" functionality for each section.
+*   **Definition of Done:** A user can navigate to the generator page, paste a job description, and receive a fully tailored set of resume content generated by the AI based on their unique profile data.
+
+---
+
+#### **Phase 4: Polishing, Testing & Dual Deployment**
+
+*   **Goal:** To prepare both the frontend and backend for a production environment, ensuring they are polished, tested, and publicly accessible.
+*   **PRD Requirements Covered:** All Non-Functional Requirements (NFRs).
+*   **Key Tasks:**
+    1.  **Backend Testing:** Use a tool like Postman or Insomnia to test all API endpoints for expected behavior, including edge cases and authentication protection.
+    2.  **Frontend Polishing:** Refine the UI/UX, ensure mobile responsiveness, and add user-friendly loading and error states for all API interactions.
+    3.  **Documentation:** Finalize the `README.md` file, explaining the decoupled architecture and providing separate instructions for running the backend and frontend locally.
+    4.  **Backend Deployment (e.g., to Heroku):**
+        *   Prepare the Python app for production (e.g., configure Gunicorn).
+        *   Deploy the application and set production environment variables (`DATABASE_URL`, `GOOGLE_API_KEY`, `FRONTEND_URL` for CORS).
+    5.  **Frontend Deployment (e.g., to Vercel):**
+        *   Deploy the Next.js application.
+        *   Set the production environment variable `NEXT_PUBLIC_API_BASE_URL` to the URL of your live Heroku backend.
+*   **Definition of Done:** Both applications are live on their respective platforms. A new user can visit the live frontend URL and use the complete application, with all API calls correctly hitting the live backend.
