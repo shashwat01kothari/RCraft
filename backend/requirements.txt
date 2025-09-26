@@ -1,0 +1,13 @@
+# For data validation and structure
+pydantic
+
+# For file parsing
+python-docx
+pypdf2
+
+# For LLM interaction
+google-generativeai
+python-dotenv
+
+# For type safety
+typing_extensions
