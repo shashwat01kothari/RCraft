@@ -1,0 +1,18 @@
+
+        Jane Smith
+        jane.smith@email.com | (555) 123-4567
+
+        Professional Summary
+        Data professional with 3 years of experience in turning raw data into actionable insights.
+
+        Experience
+        Data Analyst | DataCorp | June 2022 - Present
+        - Worked with large datasets to identify trends.
+        - Created weekly reports for management.
+        - Helped clean and prepare data for analysis.
+
+        Skills
+        - SQL, Python, R
+        - Microsoft Excel, Tableau
+        - Communication
+        
