@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 #script files
-src/app/api
+src/app/api/format.md
