@@ -3,7 +3,7 @@ pydantic
 
 # For file parsing
 python-docx
-pypdf2
+PyPDF2
 
 # For LLM interaction
 google-generativeai
