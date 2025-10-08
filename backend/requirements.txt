@@ -11,3 +11,8 @@ python-dotenv
 
 # For type safety
 typing_extensions
+
+#api
+fastapi
+uvicorn[standard]
+python-multipart
