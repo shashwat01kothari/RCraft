@@ -1,114 +1,85 @@
+# llm_analyzer_agent.py
 
 import os
 import re
 import json
+import time
 import google.generativeai as genai
+from google.api_core import exceptions
 
 class LLMAnalyzerAgent:
-    """The core AI agent using Gemini for semantic resume analysis."""
+    """The core AI agent using Gemini for holistic, multi-category resume analysis."""
 
     def __init__(self, api_key: str):
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-2.5-pro') # Using gemini-pro for speed/cost balance
+        self.model = genai.GenerativeModel('gemini-2.5-pro')
 
     def _get_llm_response(self, prompt: str) -> str:
-        """Sends a prompt to the LLM and returns the cleaned JSON response."""
-        try:
-            response = self.model.generate_content(prompt)
-            # The API response may contain markdown backticks and 'json' specifier
-            clean_response = re.sub(r'```json\n|\n```', '', response.text).strip()
-            return clean_response
-        except Exception as e:
-            print(f"Error communicating with LLM: {e}")
-            return f'{{"error": "Failed to get response from LLM: {str(e)}"}}'
+        """Sends a prompt to the LLM with robust error handling and retries."""
+        max_retries = 3
+        delay = 5
+        for attempt in range(max_retries):
+            try:
+                generation_config = genai.types.GenerationConfig(response_mime_type="application/json")
+                response = self.model.generate_content(prompt, generation_config=generation_config)
+                return response.text
+            except exceptions.ResourceExhausted as e:
+                print(f"    - Rate limit exceeded. Waiting for {delay}s. (Attempt {attempt + 1}/{max_retries})")
+                time.sleep(delay)
+                delay *= 2
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
+                return f'{{"error": "An unexpected API error occurred: {str(e)}"}}'
+        print("All retries failed. Could not get a response from the LLM.")
+        return f'{{"error": "API rate limit was exceeded and all retries failed."}}'
 
     def generate_role_persona(self, target_job_role: str) -> str:
-        """Creates a profile of an ideal candidate for a given role."""
-        print(f"Generating ideal persona for: {target_job_role}...")
+        """Creates a profile of an ideal candidate. This remains a separate, initial call."""
+        print(f"  - Generating ideal candidate persona for: {target_job_role}...")
         prompt = f"""
-            As an expert recruiter, create an "ideal candidate persona" for the job role: '{target_job_role}'.
-            Your output MUST be a JSON object with three keys: "hard_skills" (a list of strings),
-            "soft_skills" (a list of strings), and "key_responsibilities" (a list of strings).
+            You are an expert recruiter. Create an "ideal candidate persona" for the job role: '{target_job_role}'.
+            Your output MUST be a valid JSON object with three keys: "hard_skills" (list of strings),
+            "soft_skills" (list of strings), and "key_responsibilities" (list of strings).
         """
         return self._get_llm_response(prompt)
 
-    def analyze_category(self, category: str, resume_text: str, role_persona_json: str = "") -> str:
-        """Analyzes a specific resume category. All prompts expect a JSON response."""
+    def analyze_resume_holistically(self, resume_text: str, role_persona_json: str) -> str:
+        """Performs all 7 analyses in a single API call."""
         try:
-            persona = json.loads(role_persona_json) if role_persona_json else {}
+            persona = json.loads(role_persona_json)
         except json.JSONDecodeError:
-            persona = {}
-        
-        target_role = persona.get('role_title', 'the target role')
-        ideal_skills = persona.get('hard_skills', 'N/A')
-        ideal_responsibilities = persona.get('key_responsibilities', 'N/A')
+            persona = {} # Handle case where persona generation fails
 
-        # Comprehensive prompts for all categories
-        prompts = {
-            "structure": f"""
-                Analyze the 'Structure & Readability' of this resume.
-                Rules:
-                - Resume should ideally fit on 1 page, 2 pages maximum.
-                - No dense text blocks (more than 4-5 lines per paragraph).
-                - Consistent spacing and clean alignment.
-                - Clear section headings are used (Experience, Education, Skills, etc.).
-                - Check for major spelling or grammatical errors.
-                
-                Full Resume Text: "{resume_text}"
-                
-                Provide your analysis as a JSON object with an integer "score" (1-10) and a brief "feedback" string.
-            """,
-            "language": f"""
-                Analyze the 'Language & Tone' of this resume.
-                Rules:
-                - No first-person language ("I," "my").
-                - Bullets should start with strong, impactful action verbs (e.g., "Orchestrated," "Engineered," "Maximized").
-                - Avoid weak/passive verbs ("Worked on," "Helped with," "Responsible for").
-                - Consistent verb tense (past tense for past roles, present for current).
-                
-                Full Resume Text: "{resume_text}"
-                
-                Provide your analysis as a JSON object with an integer "score" (1-10) and "feedback" string with specific examples.
-            """,
-            "ats": f"""
-                Analyze the 'ATS Compatibility' of this resume's text content.
-                Rules:
-                - Uses standard, recognizable section headings (e.g., "Experience," not "My Journey").
-                - Avoids special characters or symbols that might confuse a parser.
-                - Contact info (email, phone) should be present in plain text.
-                - The text flow does not suggest the use of complex tables, columns, or graphics that would be hard to parse.
-                
-                Full Resume Text: "{resume_text}"
-                
-                Provide your analysis as a JSON object with an integer "score" (1-10) and a brief "feedback" string explaining potential issues.
-            """,
-            "summary": f"""
-                Analyze the 'Professional Summary'. The candidate targets a '{target_role}' role.
-                Rules: Must align with the target role, highlighting 1-2 key skills. Avoid clichés.
-                Resume Summary: "{resume_text}"
-                Provide your analysis as a JSON object with an integer "score" (1-10) and a brief "feedback" string.
-            """,
-            "experience": f"""
-                Analyze the 'Experience & Impact' of this resume.
-                Rules: Bullets must start with action verbs. Score higher for quantified results (%, $, #). Focus on impact, not duties.
-                Resume Experience Section: "{resume_text}"
-                Provide your analysis as a JSON object with an integer "score" (1-10) and "feedback" with specific examples.
-            """,
-            "skills": f"""
-                Analyze the 'Skills' section against the ideal skills for the role: {ideal_skills}.
-                Rules: Score high if resume skills match ideal skills. Score lower if key skills are missing. Check for skill stuffing.
-                Resume Skills Section: "{resume_text}"
-                Provide your analysis as a JSON object with an integer "score" (1-10) and a brief "feedback" string.
-            """,
-            "relevance": f"""
-                Analyze the resume's overall relevance for a role with these responsibilities: {ideal_responsibilities}.
-                Rules: Score how well the candidate's experience proves they can perform these duties.
-                Full Resume Text: "{resume_text}"
-                Provide your analysis as a JSON object with an integer "score" (1-10) and a brief "feedback" justification.
-            """
-        }
+        prompt = f"""
+            You are an expert AI Resume Coach. Your task is to analyze a resume against the ideal persona for a target role.
+            Perform a comprehensive analysis covering all 7 categories below.
 
-        prompt = prompts.get(category)
-        if not prompt:
-            return '{"score": 0, "feedback": "Category not found."}'
+            **Resume Text:**
+            ---
+            {resume_text}
+            ---
+
+            **Ideal Candidate Persona:**
+            ---
+            {json.dumps(persona, indent=2)}
+            ---
+
+            Your final output MUST be a single, valid JSON object with a key for each of the 7 categories.
+            Each category key must contain a nested JSON object with an integer "score" (from 1 to 10) and a brief "feedback" string.
+
+            Follow these rules for each category:
+
+            1.  **"structure"**: Analyze layout, page count, headings, and grammar.
+            2.  **"language"**: Analyze use of strong action verbs, consistent tense, and avoidance of first-person pronouns.
+            3.  **"ats"**: Analyze for standard headings, parsable format, and plain text contact info.
+            4.  **"summary"**: Analyze alignment with the target role and key skills mentioned in the persona.
+            5.  **"experience"**: Analyze for quantified impact (%, $, #) and action-oriented descriptions.
+            6.  **"skills"**: Analyze how well the resume's skills match the persona's "hard_skills".
+            7.  **"relevance"**: Analyze how well the overall experience aligns with the persona's "key_responsibilities".
+
+            Provide specific, actionable feedback for each category.
+        """
         return self._get_llm_response(prompt)
+
+
+
