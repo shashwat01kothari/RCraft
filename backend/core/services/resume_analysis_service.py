@@ -6,10 +6,10 @@ import logging
 import json
 from dotenv import load_dotenv
 
-from core.agents.analyzer.preprocessor_agent import PreprocessorAgent
-from core.agents.analyzer.rule_checker_agent import RuleCheckerAgent
-from core.agents.analyzer.llm_analyzer_agent import LLMAnalyzerAgent
-from core.agents.analyzer.aggregator_agent import AggregatorAgent
+from backend.core.agents.analyzer.preprocessor_agent import PreprocessorAgent
+from backend.core.agents.analyzer.rule_checker_agent import RuleCheckerAgent
+from backend.core.agents.analyzer.llm_analyzer_agent import LLMAnalyzerAgent
+from backend.core.agents.analyzer.aggregator_agent import AggregatorAgent
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
