@@ -1,7 +1,8 @@
+"""this does parsing of the file also"""
 
 import os
 import re
-import fitz  # PyMuPDF
+import fitz  
 import docx
 
 class PreprocessorAgent:
