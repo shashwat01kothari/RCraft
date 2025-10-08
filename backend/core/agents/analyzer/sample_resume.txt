@@ -1,18 +1,24 @@
 
-        Jane Smith
-        jane.smith@email.com | (555) 123-4567
+        Jane Smith, PMP
+        jane.s.smith@email.com | (555) 123-4567 | linkedin.com/in/janesmith
 
         Professional Summary
-        Data professional with 3 years of experience in turning raw data into actionable insights.
+        I am a project manager with over 8 years of experience in the tech industry. I have worked on many successful projects and am a hardworking team player looking for a new challenge. Responsible for managing timelines and stakeholders.
 
-        Experience
-        Data Analyst | DataCorp | June 2022 - Present
-        - Worked with large datasets to identify trends.
-        - Created weekly reports for management.
-        - Helped clean and prepare data for analysis.
+        Work Experience
+        Project Manager | Tech Solutions Inc. | Jan 2018 - Present
+        - Helped the team to deliver a new software product.
+        - Worked on creating project plans and status reports.
+        - Responsible for a team of 5 developers.
+
+        Project Coordinator | Web Innovators | June 2015 - Dec 2017
+        - Assisted senior project managers.
+        - Was tasked with organizing meetings.
 
         Skills
-        - SQL, Python, R
-        - Microsoft Excel, Tableau
+        - Project Management
+        - Microsoft Project
         - Communication
+        - Agile
+        - Teamwork
         
