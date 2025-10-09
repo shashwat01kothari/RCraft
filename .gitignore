@@ -2,3 +2,6 @@
 
 #backend 
 backend/venv/
+
+#frontend
+frontend/src/app/api/
