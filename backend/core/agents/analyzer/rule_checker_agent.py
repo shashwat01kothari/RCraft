@@ -25,14 +25,13 @@ class RuleCheckerAgent:
             contact_feedback.append("Phone number detected.")
         else:
             contact_feedback.append("Could not find a phone number. Include a valid contact number with country code if applicable.")
+
         if re.search(r"(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub)\/[A-Za-z0-9_-]+\/?", resume_text, re.IGNORECASE):
             contact_feedback.append("LinkedIn profile link found.")
-        else:
-            contact_feedback.append("LinkedIn profile link missing. Add a LinkedIn URL (e.g., linkedin.com/in/yourname).")
+
         if re.search(r"(https?:\/\/)?(www\.)?github\.com\/[A-Za-z0-9_-]+\/?", resume_text, re.IGNORECASE):
             contact_feedback.append("GitHub profile link found.")
-        else:
-            contact_feedback.append("GitHub profile link missing. Add your GitHub portfolio (e.g., github.com/username).")
+
         feedback["contact_info"] = " ".join(contact_feedback)
 
         # 3. Dense Text Blocks
