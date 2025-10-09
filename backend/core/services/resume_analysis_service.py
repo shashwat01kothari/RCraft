@@ -33,7 +33,7 @@ class ResumeAnalysisService:
 
     def analyze_resume(self, resume_content: bytes, filename: str, target_job_role: str) -> dict:
         """
-        Analyzes a resume provided as byte content. This is the primary entry point.
+        Analyzes a resume provided as byte content. This contains the entire pipeline.
         """
         logging.info(f"Starting analysis for role: '{target_job_role}' on file: '{filename}'")
         
@@ -45,11 +45,11 @@ class ResumeAnalysisService:
         resume_path = temp_file.name
 
         try:
-            # 2. Write content and IMMEDIATELY close the file to release the lock.
-            temp_file.write(resume_content)
-            temp_file.close() # This is the crucial step that releases the lock.
 
-            # --- Agentic Workflow (Now operates on the closed, accessible file) ---
+            temp_file.write(resume_content)
+            temp_file.close() 
+
+            # --- Agentic Workflow ---
             logging.info("Step 1/4: Pre-processing and running local checks...")
             resume_text = self.preprocessor.extract_text(resume_path)
             page_count = self.preprocessor.get_page_count(resume_path)
