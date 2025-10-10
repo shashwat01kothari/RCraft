@@ -14,7 +14,6 @@ class ContextExtractionAgent:
     The first agent in the optimizer workflow. Its responsibility is to extract
     structured information from the raw job description text.
     """
-
     def __init__(self):
         """
         Initializes the agent with a configured LLM.
