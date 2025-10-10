@@ -8,6 +8,9 @@ PyPDF2
 # For LLM interaction
 google-generativeai
 python-dotenv
+langchain
+langchain-google-genai
+langgraph
 
 # For type safety
 typing_extensions
@@ -16,3 +19,7 @@ typing_extensions
 fastapi
 uvicorn[standard]
 python-multipart
+
+
+# Web Search
+duckduckgo-search
