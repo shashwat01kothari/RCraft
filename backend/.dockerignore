@@ -1,0 +1,29 @@
+# Ignore Git history and configuration
+.git
+.gitignore
+
+# --- Python / Backend Specific ---
+# Ignore the backend's virtual environment
+backend/venv/
+backend/.venv/
+
+# Ignore Python's bytecode cache and temporary files
+backend/__pycache__/
+backend/**/*.pyc
+
+# # Ignore any resumes generated during local testing
+# backend/generated_resumes/
+
+# --- Frontend Specific ---
+# CRITICAL: Ignore the massive node_modules folder for the frontend
+frontend/node_modules/
+
+# Ignore frontend build outputs and other temporary files
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# --- IDE / Editor Specific ---
+.vscode/
+.idea/
+*.swp
