@@ -4,6 +4,7 @@ pydantic
 # For file parsing
 python-docx
 PyPDF2
+PyMuPDF
 
 # For LLM interaction
 google-generativeai
@@ -22,4 +23,11 @@ python-multipart
 
 
 # Web Search
-duckduckgo-search
+ddgs
+
+#resume creation 
+weasyprint
+jinja2
+
+#in memory DB
+redis
