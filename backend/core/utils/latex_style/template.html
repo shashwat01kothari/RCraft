@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ name }}'s Resume</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="resume-container">
+        <header>
+            <h1>{{ name }}</h1>
+            <div class="contact-info">
+                <span>{{ phone }}</span> |
+                <a href="mailto:{{ email }}">{{ email }}</a> |
+                <a href="{{ linkedin_url }}">linkedin.com/in/{{ linkedin_handle }}</a> |
+                <a href="{{ github_url }}">github.com/{{ github_handle }}</a>
+            </div>
+        </header>
+
+        <main>
+            <!-- EDUCATION SECTION -->
+            <section id="education">
+                <h2>Education</h2>
+                {% for edu in education %}
+                <div class="entry">
+                    <div class="entry-header">
+                        <div class="left-column">
+                            <h3>{{ edu.institution }}</h3>
+                            <p><em>{{ edu.degree }}</em></p>
+                        </div>
+                        <div class="right-column">
+                            <p>{{ edu.location }}</p>
+                            <p><em>{{ edu.dates }}</em></p>
+                        </div>
+                    </div>
+                    {% if edu.details %}
+                    <ul>
+                        {% for detail in edu.details %}
+                        <li>{{ detail }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+
+            <!-- PROJECTS SECTION -->
+            <section id="projects">
+                <h2>Projects</h2>
+                {% for project in projects %}
+                <div class="entry">
+                    <div class="entry-header">
+                        <div class="left-column">
+                            <h3>{{ project.name }} | <em>{{ project.technologies | join(', ') }}</em></h3>
+                        </div>
+                        <div class="right-column">
+                            <p><em>{{ project.date }}</em></p>
+                        </div>
+                    </div>
+                    <ul>
+                        {% for point in project.description %}
+                        <li>{{ point | safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </section>
+
+            <!-- TECHNICAL SKILLS SECTION -->
+            <section id="skills">
+                <h2>Technical Skills</h2>
+                <div class="skills-grid">
+                    {% for category in skills %}
+                    <p><strong>{{ category.name }}:</strong> {{ category.items | join(', ') }}</p>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- ACHIEVEMENTS SECTION -->
+            <section id="achievements">
+                <h2>Achievements & Certifications</h2>
+                <ul>
+                    {% for achievement in achievements %}
+                    <li>{{ achievement | safe }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
