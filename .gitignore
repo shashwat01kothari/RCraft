@@ -5,3 +5,8 @@ backend/venv/
 
 #frontend
 frontend/src/app/api/
+
+#pycache etc
+__pycache__/
+*.py[cod]
+*$py.class
