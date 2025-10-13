@@ -1,0 +1,30 @@
+
+services:
+  backend:
+    # 'build' tells Docker Compose to build an image from a Dockerfile.
+    build:
+      # 'context' specifies the directory to use as the build context. '.' means the current directory (where this docker-compose file is).
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: thejword1
+    env_file:
+      - .env
+    # This is CRITICAL for container-to-container networking.
+    environment:
+      - REDIS_HOST=redis
+    ports:
+      - "8000:8000"
+    # 'depends_on' is a critical feature. It tells Docker to start the 'redis'
+    # service BEFORE it starts the 'backend' service, preventing connection errors on startup.
+    depends_on:
+      - redis
+    # 'volumes' creates a live "bind mount" for hot-reloading.
+    # It syncs your local './backend' folder with the '/app/backend' folder inside the container.
+    volumes:
+      - ./backend:/app/backend
+
+  redis:
+    image: redis:alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
