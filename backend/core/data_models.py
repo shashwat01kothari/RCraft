@@ -67,6 +67,7 @@ class FinalHolisticReport(BaseModel):
 
 # --- NEW MODELS FOR THE OPTIMIZER VERTICAL ---
 
+
 class ContextOutput(BaseModel):
     """
     The structured output from the Context Extraction Agent. This serves as the
@@ -78,6 +79,45 @@ class ContextOutput(BaseModel):
     responsibilities: List[str] = Field(description="A list of core responsibilities mentioned in the JD.")
     tone: str = Field(description="The inferred tone of the company/role (e.g., 'technical and innovative', 'formal and corporate').")
     experience_level: str = Field(description="The inferred seniority level (e.g., 'mid-senior', 'entry-level', 'lead').")
+    boolean_search_string: str = Field(description="A recruiter-style boolean search string to find candidates for this role.")
+
+
+class ResearchOutput(BaseModel):
+    """
+    Structured output from the Research & Insight Agent. This captures the
+    company's cultural DNA and communication style from external sources.
+    """
+    company_style: str = Field(description="The company's communication style (e.g., 'formal yet visionary', 'playful and direct').")
+    mission_focus: List[str] = Field(description="A list of key themes from the company's mission or values (e.g., 'AI ethics', 'democratizing data').")
+    key_phrases: List[str] = Field(description="A list of specific, recurring phrases or keywords found in the research to potentially include in the resume.")
+
+class StrategyOutput(BaseModel):
+    """
+    Structured output from the Resume Strategist Agent. This serves as the
+    architectural blueprint for the resume, guiding the Builder agent.
+    """
+    sections: List[str] = Field(description="The list of section titles to be included in the final resume.")
+    priority_order: List[str] = Field(description="The recommended order of the top 3-4 most impactful sections.")
+    guidelines: List[str] = Field(description="A list of high-level, strategic instructions for the writer agent to follow.")
+    tone_of_voice: str = Field(description="A concise directive on the tone and style the resume should adopt.")
+
+
+
+class FinalResumeSections(BaseModel):
+    """A structured representation of the final resume's content, ready for rendering."""
+    summary: str = Field(description="The professional summary section.")
+    experience: str = Field(description="The work experience section, formatted as a single string.")
+    projects: str = Field(description="The projects section, formatted as a single string.")
+    skills: str = Field(description="The skills section, formatted as a single string.")
+    education: Optional[str] = Field(None, description="The education section, if present.")
+
+class ReviewerOutput(BaseModel):
+    """The structured output from the Final Reviewer Agent."""
+    final_resume: FinalResumeSections
+    format: str = Field(default="docx", description="The desired output file format.")
+    readability_score: float = Field(..., ge=0.0, le=1.0, description="A score from 0.0 to 1.0 indicating ease of reading.")
+
+
 
 class OptimizerWorkflowState(BaseModel):
     """
@@ -88,3 +128,21 @@ class OptimizerWorkflowState(BaseModel):
     job_description: str
     job_role: str
     company_name: str
+
+    # --- Agent Outputs (populated sequentially) ---
+    context: Optional[ContextOutput] = None
+    research: Optional[ResearchOutput] = None
+    strategy: Optional[StrategyOutput] = None
+    draft_resume_text: Optional[str] = Field(None, description="The first full draft of the resume, formatted as a single Markdown string.")
+    optimized_resume_text: Optional[str] = Field(None, description="The refined resume draft, optimized for ATS keyword and semantic alignment.")
+    final_report: Optional[ReviewerOutput] = None
+
+
+
+class WorkflowRunResponse(BaseModel):
+    """
+    The response sent after the initial workflow is complete. It provides a unique
+    ID for the results and the data needed for a frontend preview.
+    """
+    workflow_id: str = Field(description="The unique ID for this workflow run, used to download the final asset.")
+    resume_data: FinalResumeSections = Field(description="The structured resume content for preview.")
