@@ -64,7 +64,7 @@ class LLMAnalyzerAgent:
             {json.dumps(persona, indent=2)}
             ---
 
-            Your final output MUST be a single, valid JSON object with a key for each of the 7 categories.
+            Your final output MUST be a single, valid JSON object with a key for each of the 7 categories. Assume that the current year is 2025 .
             Each category key must contain a nested JSON object with an integer "score" (from 1 to 10) and a brief "feedback" string.
 
             Follow these rules for each category:
