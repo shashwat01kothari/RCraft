@@ -3,7 +3,7 @@ from fastapi import APIRouter, Form, HTTPException, Depends
 from fastapi.responses import FileResponse
 from backend.core.services.resume_optimizer_service import ResumeOptimizerService
 from backend.core.data_models import OptimizerWorkflowState, WorkflowRunResponse
-from backend.core.tools.pdf_renderer import PdfRenderer
+from backend.core.tools.pdf_renderer import TypstRenderer
 from backend.core.tools.workflow_state_manager import WorkflowStateManager
 
 router = APIRouter()
@@ -76,27 +76,20 @@ async def download_resume_pdf(
     state_manager: WorkflowStateManager = Depends(get_state_manager)
 ):
     """
-    Retrieves the result of a completed workflow using its unique ID and returns
-    the generated resume as a professionally typeset, downloadable PDF file.
+    Retrieves the result of a completed workflow and returns the generated
+    resume as a downloadable, professionally typeset .pdf file using Typst.
     """
     print(f"--- API: Received request to download PDF for ID: {workflow_id} ---")
-    
-    renderer = PdfRenderer()
+    renderer = TypstRenderer() # <-- The only change is here
     file_path = None
     try:
-        # 1. Load the resume data from Redis using the provided ID.
         resume_data = state_manager.load_state(workflow_id)
-        
-        # 2. Delegate the rendering task to the dedicated PdfRenderer tool.
         file_path = renderer.render_to_pdf(resume_data)
         
-        # 3. Return the generated file as a downloadable response.
         return FileResponse(
             path=file_path,
             media_type='application/pdf',
-            # Provide a user-friendly filename for the download.
-            filename=f"Optimized_Resume_{workflow_id[:8]}.pdf"
-        )
+            filename=f"Optimized_Resume_{workflow_id[:8]}.pdf")
         
     except FileNotFoundError as e:
         # This error is raised by the state manager if the ID is invalid or expired.
